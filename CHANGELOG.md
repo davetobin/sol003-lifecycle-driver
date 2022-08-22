@@ -1,6 +1,13 @@
 # Change Log
 
-## [0.4.0](https://github.com/IBM/sol003-lifecycle-driver/tree/0.3.3) (2022-08-10)
+## [0.4.1](https://github.com/IBM/sol003-lifecycle-driver/tree/0.4.1) (2022-08-22)
+[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.4.0...0.4.1)
+
+**Implemented enhancements:**
+
+- Java version changed to 1.8 for CP4NA 2.3.x versions
+
+## [0.4.0](https://github.com/IBM/sol003-lifecycle-driver/tree/0.4.0) (2022-08-10)
 [Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.3.2...0.4.0)
 
 **Implemented enhancements:**
