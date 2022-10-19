@@ -46,11 +46,13 @@ public class GrantController {
     public ResponseEntity<Grant> requestGrant(@RequestBody GrantRequest grantRequest) throws GrantRejectedException, GrantProviderException {
         logger.info("Received grant request:\n{}", grantRequest);
         UUID uuid = UUID.randomUUID();
-        String driverRequestId = null;
+        String driverRequestId = "";
+        String grantRequestMsg = "";
         if(grantRequest != null){
-            driverRequestId = grantRequest.getVnfLcmOpOccId().toString();
+            driverRequestId = grantRequest.getVnfLcmOpOccId();
+            grantRequestMsg = grantRequest.toString();
         }
-        LoggingUtils.logEnabledMDC(grantRequest != null ? grantRequest.toString() : null, MessageType.REQUEST, MessageDirection.RECEIVED, uuid.toString(),MediaType.APPLICATION_JSON.toString(), "https",getRequestProtocolMetaData(GRANT_LOCATION) , driverRequestId);
+        LoggingUtils.logEnabledMDC(grantRequestMsg, MessageType.REQUEST, MessageDirection.RECEIVED, uuid.toString(),MediaType.APPLICATION_JSON.toString(), "https",getRequestProtocolMetaData(GRANT_LOCATION) , driverRequestId);
         GrantCreationResponse grantCreationResponse = grantService.requestGrant(grantRequest);
 
         final ServletUriComponentsBuilder uriBuilder = ServletUriComponentsBuilder.fromCurrentContextPath();
