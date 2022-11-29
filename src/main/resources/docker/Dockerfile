@@ -14,8 +14,10 @@ RUN groupadd -g 1000 -r sld \
  && chmod -R 775 /var/lm
 RUN yum update -y \
  && yum upgrade -y \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /var/lm/truststore/
 USER sld
+COPY test-harness.p12 /var/lm/truststore/
 COPY sol003-lifecycle-driver-@project.version@.jar /data/sol003-lifecycle-driver-@project.version@.jar
 # Set HOME variable (for OCP arbitrary user)
 ENV HOME /home/sld
