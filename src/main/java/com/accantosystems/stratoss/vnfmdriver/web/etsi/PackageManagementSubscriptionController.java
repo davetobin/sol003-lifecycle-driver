@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.etsi.sol003.packagemanagement.PkgmSubscription;
 import org.etsi.sol003.packagemanagement.PkgmSubscriptionRequest;

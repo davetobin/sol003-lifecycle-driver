@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.accantosystems.stratoss.vnfmdriver.model.alm.FindReferenceRequest;
 import org.slf4j.Logger;
