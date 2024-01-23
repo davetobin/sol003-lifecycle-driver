@@ -22,6 +22,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.accantosystems.stratoss.vnfmdriver.driver.VNFPackageNotFoundException;
@@ -55,6 +56,7 @@ public class PackageManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser(authorities="USER")
     public void testQueryPackageInfoEmptyList() throws Exception {
         VnfPkgInfo vnfPkgInfo = objectMapper.readValue(loadFileIntoString("examples/vnfPackageId.pkgInfo"), VnfPkgInfo.class);
         when(packageManagementService.getAllVnfPackageInfos(isNull())).thenReturn(Collections.singletonList(vnfPkgInfo));
