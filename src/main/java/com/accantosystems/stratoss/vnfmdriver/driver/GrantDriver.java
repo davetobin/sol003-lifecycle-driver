@@ -4,21 +4,33 @@ import static com.accantosystems.stratoss.vnfmdriver.config.VNFMDriverConstants.
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 import com.accantosystems.stratoss.common.utils.LoggingUtils;
 import com.accantosystems.stratoss.vnfmdriver.model.MessageDirection;
 import com.accantosystems.stratoss.vnfmdriver.model.MessageType;
 import com.accantosystems.stratoss.vnfmdriver.utils.RequestResponseLogUtils;
+
+import lombok.RequiredArgsConstructor;
+
 import org.etsi.sol003.granting.Grant;
 import org.etsi.sol003.granting.GrantRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -28,11 +40,14 @@ import com.accantosystems.stratoss.vnfmdriver.config.VNFMDriverProperties.Authen
 import com.accantosystems.stratoss.vnfmdriver.model.AuthenticationType;
 import com.accantosystems.stratoss.vnfmdriver.model.GrantCreationResponse;
 import com.accantosystems.stratoss.vnfmdriver.service.GrantRejectedException;
+import com.accantosystems.stratoss.vnfmdriver.service.OAuthClientCredentialsRestTemplateInterceptor;
 import com.accantosystems.stratoss.vnfmdriver.utils.DynamicSslCertificateHttpRequestFactory;
 
 /**
  * Driver implementing the ETSI SOL003 Grant interface
  */
+//@Configuration
+//@RequiredArgsConstructor
 @Service("GrantDriver")
 @ConditionalOnProperty(name = "vnfmdriver.grant.automatic", havingValue = "false")
 public class GrantDriver {
@@ -213,7 +228,7 @@ public class GrantDriver {
             String clientId = checkProperty(authenticationProperties.getClientId(), AUTHENTICATION_CLIENT_ID);
             String clientSecret = checkProperty(authenticationProperties.getClientSecret(), AUTHENTICATION_CLIENT_SECRET);
 
-            authenticatedRestTemplate = getOAuth2RestTemplate(customRestTemplateBuilder, authenticationProperties, accessTokenUri, clientId, clientSecret);
+            authenticatedRestTemplate = getOAuth2AuthenticatedRestTemplate(customRestTemplateBuilder, authenticationProperties, accessTokenUri, clientId, clientSecret);
 
             break;
         case COOKIE:
@@ -235,19 +250,82 @@ public class GrantDriver {
                 .build();
     }
 
-    private RestTemplate getOAuth2RestTemplate(RestTemplateBuilder customRestTemplateBuilder, Authentication authenticationProperties, String accessTokenUri, String clientId, String clientSecret) {
-        final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setAccessTokenUri(accessTokenUri);
-        resourceDetails.setClientId(clientId);
-        resourceDetails.setClientSecret(clientSecret);
-        resourceDetails.setGrantType("client_credentials");
+//    private RestTemplate getOAuth2RestTemplate(RestTemplateBuilder customRestTemplateBuilder, Authentication authenticationProperties, String accessTokenUri, String clientId, String clientSecret) {
+//        final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
+//        resourceDetails.setAccessTokenUri(accessTokenUri);
+//        resourceDetails.setClientId(clientId);
+//        resourceDetails.setClientSecret(clientSecret);
+//        resourceDetails.setGrantType("client_credentials");
+//        if (StringUtils.hasText(authenticationProperties.getScope())) {
+//            resourceDetails.setScope(Arrays.asList(authenticationProperties.getScope().split(",")));
+//        }
+//
+//        logger.info("Configuring OAuth2 authenticated RestTemplate.");
+//        return customRestTemplateBuilder.configure(new OAuth2RestTemplate(resourceDetails));
+//    }
+//    private static AuthorizationGrantType mapStringToGrantType(String grantTypeString, AuthorizationGrantType defaultGrantType) {
+//        switch (grantTypeString) {
+//            case "client_credentials":
+//                return AuthorizationGrantType.CLIENT_CREDENTIALS;
+//            case "authorization_code":
+//                return AuthorizationGrantType.AUTHORIZATION_CODE;
+//            case "password":
+//                return AuthorizationGrantType.PASSWORD;
+//            case "refresh_token":
+//                return AuthorizationGrantType.REFRESH_TOKEN;
+//            default:
+//                return defaultGrantType;
+//        }
+//    }
+//    private static AuthorizationGrantType getOrDefaultForGrantType(final Map<String, String> properties, String grantTypeKey, AuthorizationGrantType defaultGrantType) {
+//
+//        String grantTypeStr = properties.get(grantTypeKey);
+//        if (grantTypeStr == null) {
+//            return defaultGrantType;
+//        }
+//
+//        return mapStringToGrantType(grantTypeStr, defaultGrantType);
+//    }
+
+    private RestTemplate getOAuth2AuthenticatedRestTemplate(RestTemplateBuilder customRestTemplateBuilder, Authentication authenticationProperties, String accessTokenUri, String clientId, String clientSecret) {
+        ClientRegistration.Builder clientRegistrationBuilder = ClientRegistration.withRegistrationId(clientId)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS )
+                .tokenUri(accessTokenUri);
+
         if (StringUtils.hasText(authenticationProperties.getScope())) {
-            resourceDetails.setScope(Arrays.asList(authenticationProperties.getScope().split(",")));
+                    clientRegistrationBuilder.scope(Arrays.asList(authenticationProperties.getScope().split(",")));
+                }  
+        ClientRegistration clientRegistration = clientRegistrationBuilder.build();
+        return customRestTemplateBuilder
+                .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(clientRegistration), clientRegistration))
+                .build();
+
         }
 
-        logger.info("Configuring OAuth2 authenticated RestTemplate.");
-        return customRestTemplateBuilder.configure(new OAuth2RestTemplate(resourceDetails));
-    }
+    private OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistration clientRegistration) {
+        var authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+                .clientCredentials()
+                .build();
+
+        ClientRegistrationRepository clientRegistrationRepository = clientRegistrationRepository(clientRegistration);
+        OAuth2AuthorizedClientService oAuth2AuthorizedClientService = authorizedClientService(clientRegistrationRepository);
+        var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
+        }
+
+    private OAuth2AuthorizedClientService authorizedClientService(
+            ClientRegistrationRepository clientRegistrationRepository) {
+
+        return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+        }
+
+        public ClientRegistrationRepository clientRegistrationRepository(ClientRegistration clientRegistration) {
+            return new InMemoryClientRegistrationRepository(clientRegistration);
+        }
 
     private RestTemplateBuilder configureRestTemplateBuilder(RestTemplateBuilder restTemplateBuilder, GrantResponseErrorHandler grantResponseErrorHandler) {
         RestTemplateBuilder customRestTemplateBuilder = restTemplateBuilder.errorHandler(grantResponseErrorHandler)
