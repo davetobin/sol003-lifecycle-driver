@@ -56,7 +56,6 @@ public class PackageManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(authorities="USER")
     public void testQueryPackageInfoEmptyList() throws Exception {
         VnfPkgInfo vnfPkgInfo = objectMapper.readValue(loadFileIntoString("examples/vnfPackageId.pkgInfo"), VnfPkgInfo.class);
         when(packageManagementService.getAllVnfPackageInfos(isNull())).thenReturn(Collections.singletonList(vnfPkgInfo));

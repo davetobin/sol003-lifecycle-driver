@@ -28,7 +28,7 @@ import com.accantosystems.stratoss.vnfmdriver.service.GrantRejectedException;
 import com.accantosystems.stratoss.vnfmdriver.service.GrantService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles({"test"})
 public class GrantControllerTest {
 
     public static final String GRANTS_ENDPOINT = "/grant/v1/grants";
@@ -45,7 +45,6 @@ public class GrantControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities="USER")
     public void testRequestGrantSync() throws Exception {
 
         // grantService responds immediately with the requested grant
