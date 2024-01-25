@@ -13,7 +13,7 @@
     <!-- Must be duplicated for versions:set plugin to work in builds -->
     <groupId>com.accantosystems.stratoss</groupId>
     <artifactId>sol003-lifecycle-driver</artifactId>
-    <version>0.6.5-SNAPSHOT</version>
+    <version>0.6.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SOL003 VNFM Driver</name>
@@ -64,6 +64,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.13</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -202,6 +207,11 @@
             <artifactId>spring-security-oauth2</artifactId>
             <version>2.5.2.RELEASE</version>
         </dependency> -->
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>1.1.10.5</version>
+        </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
