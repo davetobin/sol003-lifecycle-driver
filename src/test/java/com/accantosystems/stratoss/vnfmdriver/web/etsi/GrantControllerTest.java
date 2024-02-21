@@ -160,8 +160,10 @@ public class GrantControllerTest {
 
     @Test
     public void testRequestGrantInvalidMessage() {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>("NOT_VALID_JSON",headers);
         final ResponseEntity<ProblemDetails> responseEntity = testRestTemplate.withBasicAuth("user", "password")
-                .postForEntity(GRANTS_ENDPOINT, "NOT_VALID_JSON", ProblemDetails.class);
+                .postForEntity(GRANTS_ENDPOINT, httpEntity, ProblemDetails.class);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE);

@@ -33,6 +33,7 @@ public class WebSecurityConfiguration {
                     .requestMatchers("/grant/**").hasRole("USER")
                     .requestMatchers("/vnfpkgm/v1/**").hasRole("USER")
                     .requestMatchers("/management/**").hasRole("USER")
+                    .requestMatchers("/error").hasRole("USER")
                     .anyRequest().denyAll() // Denying all other requests
             )
             .httpBasic(); // Using HTTP Basic authentication
