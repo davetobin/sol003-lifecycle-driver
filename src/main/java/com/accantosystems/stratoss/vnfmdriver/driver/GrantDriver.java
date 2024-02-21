@@ -250,43 +250,6 @@ public class GrantDriver {
                 .build();
     }
 
-//    private RestTemplate getOAuth2RestTemplate(RestTemplateBuilder customRestTemplateBuilder, Authentication authenticationProperties, String accessTokenUri, String clientId, String clientSecret) {
-//        final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-//        resourceDetails.setAccessTokenUri(accessTokenUri);
-//        resourceDetails.setClientId(clientId);
-//        resourceDetails.setClientSecret(clientSecret);
-//        resourceDetails.setGrantType("client_credentials");
-//        if (StringUtils.hasText(authenticationProperties.getScope())) {
-//            resourceDetails.setScope(Arrays.asList(authenticationProperties.getScope().split(",")));
-//        }
-//
-//        logger.info("Configuring OAuth2 authenticated RestTemplate.");
-//        return customRestTemplateBuilder.configure(new OAuth2RestTemplate(resourceDetails));
-//    }
-//    private static AuthorizationGrantType mapStringToGrantType(String grantTypeString, AuthorizationGrantType defaultGrantType) {
-//        switch (grantTypeString) {
-//            case "client_credentials":
-//                return AuthorizationGrantType.CLIENT_CREDENTIALS;
-//            case "authorization_code":
-//                return AuthorizationGrantType.AUTHORIZATION_CODE;
-//            case "password":
-//                return AuthorizationGrantType.PASSWORD;
-//            case "refresh_token":
-//                return AuthorizationGrantType.REFRESH_TOKEN;
-//            default:
-//                return defaultGrantType;
-//        }
-//    }
-//    private static AuthorizationGrantType getOrDefaultForGrantType(final Map<String, String> properties, String grantTypeKey, AuthorizationGrantType defaultGrantType) {
-//
-//        String grantTypeStr = properties.get(grantTypeKey);
-//        if (grantTypeStr == null) {
-//            return defaultGrantType;
-//        }
-//
-//        return mapStringToGrantType(grantTypeStr, defaultGrantType);
-//    }
-
     private RestTemplate getOAuth2AuthenticatedRestTemplate(RestTemplateBuilder customRestTemplateBuilder, Authentication authenticationProperties, String accessTokenUri, String clientId, String clientSecret) {
         ClientRegistration.Builder clientRegistrationBuilder = ClientRegistration.withRegistrationId(clientId)
                 .clientId(clientId)
