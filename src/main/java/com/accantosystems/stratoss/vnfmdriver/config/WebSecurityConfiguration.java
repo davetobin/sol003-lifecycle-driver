@@ -43,7 +43,7 @@ public class WebSecurityConfiguration {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/**", "/management/health", "/management/info", "/nspkgm/v2/**");
+        return (web) -> web.ignoring().requestMatchers("/api/**", "/management/health", "/management/info", "/vnfpkgm/v2/**");
     }
 
     @Bean
