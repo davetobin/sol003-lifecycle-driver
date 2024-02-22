@@ -215,12 +215,16 @@ public class PackageManagementControllerTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
 
+        // Due to https://github.com/spring-projects/spring-boot/issues/39693 adding addition APPLICATION_JSON Accept type to pass testcase
+
         // Check with only invalid Accept types specified
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON));
         httpEntity = new HttpEntity<>(headers);
         responseEntity = testRestTemplate.withBasicAuth("user", "password")
                                          .exchange(PACKAGE_MANAGEMENT_VNFD_ENDPOINT, HttpMethod.GET, httpEntity, Resource.class, vnfPkgId);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
+
+        // Due to https://github.com/spring-projects/spring-boot/issues/39693 adding addition APPLICATION_JSON Accept type to pass testcase
 
         // Check with additional invalid Accept types specified
         headers.setAccept(Arrays.asList(MediaType.parseMediaType("application/zip"), MediaType.TEXT_PLAIN, MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON));
@@ -229,6 +233,8 @@ public class PackageManagementControllerTest {
                                          .exchange(PACKAGE_MANAGEMENT_VNFD_ENDPOINT, HttpMethod.GET, httpEntity, Resource.class, vnfPkgId);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_ACCEPTABLE);
 
+        // Due to https://github.com/spring-projects/spring-boot/issues/39693 adding addition APPLICATION_JSON Accept type to pass testcase
+        
         // Check when Accept type of text/plain but multiple vnfds found within the package
         when(packageManagementService.getVnfdAsYaml(eq(vnfPkgId))).thenThrow(new UnexpectedPackageContentsException("Unexpected package contents"));
         headers.setAccept(Arrays.asList(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON));
