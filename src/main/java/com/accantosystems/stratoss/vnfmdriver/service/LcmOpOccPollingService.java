@@ -4,7 +4,7 @@ import static com.accantosystems.stratoss.vnfmdriver.config.VNFMDriverConstants.
 
 import java.io.IOException;
 import java.util.Collections;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 import org.etsi.sol003.lifecyclemanagement.LcmOperationStateType;
 import org.etsi.sol003.lifecyclemanagement.VnfLcmOpOcc;
