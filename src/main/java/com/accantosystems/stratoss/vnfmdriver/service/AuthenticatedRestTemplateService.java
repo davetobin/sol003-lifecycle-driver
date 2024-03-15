@@ -12,8 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
@@ -26,11 +34,15 @@ import com.accantosystems.stratoss.vnfmdriver.security.CookieAuthenticatedRestTe
 import com.accantosystems.stratoss.vnfmdriver.security.CookieCredentials;
 import com.accantosystems.stratoss.vnfmdriver.utils.DynamicSslCertificateHttpRequestFactory;
 
+import lombok.RequiredArgsConstructor;
+
+
 @Service("AuthenticatedRestTemplateService")
 public class AuthenticatedRestTemplateService {
 
     private final static Logger logger = LoggerFactory.getLogger(AuthenticatedRestTemplateService.class);
 
+    public static final String OAUTH_WEBCLIENT = "OAUTH_WEBCLIENT";
     private final RestTemplateBuilder restTemplateBuilder;
     private final Map<ResourceManagerDeploymentLocation, RestTemplate> cachedRestTemplatesByDLs = new ConcurrentHashMap<>();
     private final Map<String, RestTemplate> cachedRestTemplatesByServerUrl = new ConcurrentHashMap<>();
@@ -94,7 +106,7 @@ public class AuthenticatedRestTemplateService {
             checkProperty(authenticationProperties, AUTHENTICATION_ACCESS_TOKEN_URI);
             checkProperty(authenticationProperties, AUTHENTICATION_CLIENT_ID);
             checkProperty(authenticationProperties, AUTHENTICATION_CLIENT_SECRET);
-            restTemplate = getOAuth2RestTemplate(authenticationProperties);
+            restTemplate = getOAuth2AuthenticatedRestTemplate(authenticationProperties);
             break;
         case COOKIE:
             checkProperty(authenticationProperties, AUTHENTICATION_URL);
@@ -127,19 +139,69 @@ public class AuthenticatedRestTemplateService {
                 .build();
     }
 
-    private RestTemplate getOAuth2RestTemplate(final Map<String, String> authenticationProperties) {
-        final ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setAccessTokenUri(authenticationProperties.get(AUTHENTICATION_ACCESS_TOKEN_URI));
-        resourceDetails.setClientId(authenticationProperties.get(AUTHENTICATION_CLIENT_ID));
-        resourceDetails.setClientSecret(authenticationProperties.get(AUTHENTICATION_CLIENT_SECRET));
-        resourceDetails.setGrantType(authenticationProperties.getOrDefault(AUTHENTICATION_GRANT_TYPE, "client_credentials"));
-        if (StringUtils.hasText(authenticationProperties.get(AUTHENTICATION_SCOPE))) {
-            resourceDetails.setScope(Arrays.asList(authenticationProperties.get(AUTHENTICATION_SCOPE).split(",")));
+    private static AuthorizationGrantType mapStringToGrantType(String grantTypeString, AuthorizationGrantType defaultGrantType) {
+        switch (grantTypeString) {
+            case "client_credentials":
+                return AuthorizationGrantType.CLIENT_CREDENTIALS;
+            case "authorization_code":
+                return AuthorizationGrantType.AUTHORIZATION_CODE;
+            case "password":
+                return AuthorizationGrantType.PASSWORD;
+            case "refresh_token":
+                return AuthorizationGrantType.REFRESH_TOKEN;
+            default:
+                return defaultGrantType;
+        }
+    }
+    private static AuthorizationGrantType getOrDefaultForGrantType(final Map<String, String> properties, String grantTypeKey, AuthorizationGrantType defaultGrantType) {
+
+        String grantTypeStr = properties.get(grantTypeKey);
+        if (grantTypeStr == null) {
+            return defaultGrantType;
         }
 
-        logger.info("Configuring OAuth2 authenticated RestTemplate.");
-        return restTemplateBuilder.configure(new OAuth2RestTemplate(resourceDetails));
+        return mapStringToGrantType(grantTypeStr, defaultGrantType);
     }
+
+    private RestTemplate getOAuth2AuthenticatedRestTemplate(final Map<String, String> authenticationProperties) {
+        ClientRegistration.Builder clientRegistrationBuilder = ClientRegistration.withRegistrationId(authenticationProperties.get(AUTHENTICATION_CLIENT_ID))
+                .clientId(authenticationProperties.get(AUTHENTICATION_CLIENT_ID))
+                .clientSecret(authenticationProperties.get(AUTHENTICATION_CLIENT_SECRET))
+                .authorizationGrantType(getOrDefaultForGrantType(authenticationProperties, AUTHENTICATION_GRANT_TYPE, AuthorizationGrantType.CLIENT_CREDENTIALS ))
+                .tokenUri(authenticationProperties.get(AUTHENTICATION_ACCESS_TOKEN_URI));
+
+        if (StringUtils.hasText(authenticationProperties.get(AUTHENTICATION_SCOPE))) {
+                    clientRegistrationBuilder.scope(Arrays.asList(authenticationProperties.get(AUTHENTICATION_SCOPE).split(",")));
+                }  
+        ClientRegistration clientRegistration = clientRegistrationBuilder.build();
+        return restTemplateBuilder
+                .additionalInterceptors(new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(clientRegistration), clientRegistration))
+                .build();
+
+        }
+
+    private OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistration clientRegistration) {
+        var authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+                .clientCredentials()
+                .build();
+
+        ClientRegistrationRepository clientRegistrationRepository = clientRegistrationRepository(clientRegistration);
+        OAuth2AuthorizedClientService oAuth2AuthorizedClientService = authorizedClientService(clientRegistrationRepository);
+        var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
+        }
+
+    private OAuth2AuthorizedClientService authorizedClientService(
+            ClientRegistrationRepository clientRegistrationRepository) {
+
+        return new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+        }
+
+        public ClientRegistrationRepository clientRegistrationRepository(ClientRegistration clientRegistration) {
+            return new InMemoryClientRegistrationRepository(clientRegistration);
+        }
 
     private RestTemplate getCookieAuthenticatedRestTemplate(final Map<String, String> authenticationProperties) {
         CookieCredentials cookieCredentials = new CookieCredentials();

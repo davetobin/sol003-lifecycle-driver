@@ -112,11 +112,11 @@ public class VNFLifecycleManagementDriver {
         } catch (Throwable e){
             // To log all unknown errors while making external call
             LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(e.getMessage()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), null), driverrequestid);
+                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), LoggingUtils.getReasonPhrase(HttpStatus.INTERNAL_SERVER_ERROR.value()), null), driverrequestid);
             throw e;
         }
         LoggingUtils.logEnabledMDC(responseEntity.getBody(), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCodeValue(), responseEntity.getStatusCode().getReasonPhrase(), responseEntity.getHeaders()), driverrequestid);
+                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCode().value(), LoggingUtils.getReasonPhrase(responseEntity.getStatusCode().value()), responseEntity.getHeaders()), driverrequestid);
         // "Location" header also includes URI of the created instance
         checkResponseEntityMatches(responseEntity, HttpStatus.CREATED, true);
         return responseEntity.getBody();
@@ -153,11 +153,11 @@ public class VNFLifecycleManagementDriver {
         } catch(Throwable e){
             // To log all unknown errors while making external call
             LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(e.getMessage()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), null), driverrequestid);
+                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), LoggingUtils.getReasonPhrase(HttpStatus.INTERNAL_SERVER_ERROR.value()), null), driverrequestid);
             throw e;
         }
         LoggingUtils.logEnabledMDC("", MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), "", "http",
-                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCodeValue(), responseEntity.getStatusCode().getReasonPhrase(), responseEntity.getHeaders()), driverrequestid);
+                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCode().value(), LoggingUtils.getReasonPhrase(responseEntity.getStatusCode().value()), responseEntity.getHeaders()), driverrequestid);
         checkResponseEntityMatches(responseEntity, HttpStatus.NO_CONTENT, false);
     }
 
@@ -385,7 +385,7 @@ public class VNFLifecycleManagementDriver {
         } catch(Throwable e) {
             // To log all unknown errors while making external call
             LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(e.getMessage()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), null), null);
+                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), LoggingUtils.getReasonPhrase(HttpStatus.INTERNAL_SERVER_ERROR.value()), null), null);
             throw e;
         }
         checkResponseEntityMatches(responseEntity, HttpStatus.ACCEPTED, false);
@@ -397,7 +397,7 @@ public class VNFLifecycleManagementDriver {
         // Return the VnfLcmOpOccId, which is the last part of the path
         final String requestId = location.getPath().substring(location.getPath().lastIndexOf("/") + 1);
         LoggingUtils.logEnabledMDC("", MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), "", "http",
-                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCodeValue(), responseEntity.getStatusCode().getReasonPhrase(), responseEntity.getHeaders()), requestId);
+                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCode().value(), LoggingUtils.getReasonPhrase(responseEntity.getStatusCode().value()), responseEntity.getHeaders()), requestId);
         return requestId;
     }
 
@@ -472,11 +472,11 @@ public class VNFLifecycleManagementDriver {
         } catch (Throwable e){
             // To log all unknown errors while making external call
             LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(e.getMessage()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), null), null);
+                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), LoggingUtils.getReasonPhrase(HttpStatus.INTERNAL_SERVER_ERROR.value()), null), null);
             throw e;
         }
         LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(responseEntity.getBody().toString()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCodeValue(), responseEntity.getStatusCode().getReasonPhrase(), responseEntity.getHeaders()), null);
+                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCode().value(), LoggingUtils.getReasonPhrase(responseEntity.getStatusCode().value()), responseEntity.getHeaders()), null);
         // "Location" header also includes URI of the created instance
         checkResponseEntityMatches(responseEntity, HttpStatus.CREATED, true);
         return responseEntity.getBody();
@@ -542,11 +542,11 @@ public class VNFLifecycleManagementDriver {
         } catch (Throwable e){
             // To log all unknown errors while making external call
             LoggingUtils.logEnabledMDC(RequestResponseLogUtils.convertToJson(e.getMessage()), MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), MediaType.APPLICATION_JSON_VALUE, "http",
-                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), null), null);
+                    RequestResponseLogUtils.getResponseReceivedProtocolMetaData(HttpStatus.INTERNAL_SERVER_ERROR.value(), LoggingUtils.getReasonPhrase(HttpStatus.INTERNAL_SERVER_ERROR.value()), null), null);
             throw e;
         }
         LoggingUtils.logEnabledMDC("", MessageType.RESPONSE, MessageDirection.RECEIVED, uuid.toString(), "", "http",
-                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCodeValue(), responseEntity.getStatusCode().getReasonPhrase(), responseEntity.getHeaders()), null);
+                RequestResponseLogUtils.getResponseReceivedProtocolMetaData(responseEntity.getStatusCode().value(), LoggingUtils.getReasonPhrase(responseEntity.getStatusCode().value()), responseEntity.getHeaders()), null);
         checkResponseEntityMatches(responseEntity, HttpStatus.NO_CONTENT, false);
     }
 

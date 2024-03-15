@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.accantosystems.stratoss.vnfmdriver.model.GrantCreationResponse;
@@ -27,7 +28,7 @@ import com.accantosystems.stratoss.vnfmdriver.service.GrantRejectedException;
 import com.accantosystems.stratoss.vnfmdriver.service.GrantService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles({"test"})
 public class GrantControllerTest {
 
     public static final String GRANTS_ENDPOINT = "/grant/v1/grants";
@@ -159,8 +160,10 @@ public class GrantControllerTest {
 
     @Test
     public void testRequestGrantInvalidMessage() {
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<String> httpEntity = new HttpEntity<>("NOT_VALID_JSON",headers);
         final ResponseEntity<ProblemDetails> responseEntity = testRestTemplate.withBasicAuth("user", "password")
-                .postForEntity(GRANTS_ENDPOINT, "NOT_VALID_JSON", ProblemDetails.class);
+                .postForEntity(GRANTS_ENDPOINT, httpEntity, ProblemDetails.class);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNSUPPORTED_MEDIA_TYPE);

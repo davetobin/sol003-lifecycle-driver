@@ -1,7 +1,7 @@
 package com.accantosystems.stratoss.vnfmdriver.web.alm;
 
 import java.util.HashMap;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.etsi.sol003.common.ProblemDetails;
 import org.slf4j.Logger;

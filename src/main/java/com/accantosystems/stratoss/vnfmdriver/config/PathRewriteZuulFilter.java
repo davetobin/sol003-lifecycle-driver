@@ -14,7 +14,7 @@ import com.netflix.zuul.context.RequestContext;
 @Component("PathRewriteZuulFilter")
 public class PathRewriteZuulFilter extends ZuulFilter {
 
-    @Autowired
+    @Autowired (required=false)
     private ZuulProperties zuulProperties;
 
     @Override
