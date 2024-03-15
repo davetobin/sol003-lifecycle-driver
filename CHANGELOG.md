@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.7.0](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.0) (2024-03-15)
+[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.6.5...0.7.0)
+
+**Implemented enhancements:**
+
+- Uplift sol003-lifecycle-driver to SpringBoot3 [\#187](https://github.com/IBM/sol003-lifecycle-driver/issues/187)
+
 ## [0.6.5](https://github.com/IBM/sol003-lifecycle-driver/tree/0.6.5) (2024-01-18)
 [Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.6.4...0.6.5)
 
