@@ -64,6 +64,13 @@
     </properties>
 
     <dependencies>
+        <!-- Uplifted logback-core explicity to fix CVE-2023-6378, on SpringBoot uplift do check its needed 
+        or not as upgraded SpringBoot3 might use new version -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.4.12</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
