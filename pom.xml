@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <version>3.0.13</version>
+        <version>3.1.10</version>
         <relativePath />
         <!-- lookup parent from repository -->
     </parent>
@@ -64,19 +64,6 @@
     </properties>
 
     <dependencies>
-        <!-- Uplifted logback-core explicity to fix CVE-2023-6378, on SpringBoot uplift do check its needed 
-        or not as upgraded SpringBoot3 might use new version -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>1.4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.4.12</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
