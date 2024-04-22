@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.7.2](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.2) (2024-04-22)
+[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.1...0.7.2)
+
+**Implemented enhancements:**
+
+- Upgrade springboot to fix CVE-2023-6378 [\#200](https://github.com/IBM/sol003-lifecycle-driver/issues/200)
+
 ## [0.7.1](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.1) (2024-04-17)
 [Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.0...0.7.1)
 
