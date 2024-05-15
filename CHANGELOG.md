@@ -1,7 +1,7 @@
 # Change Log
 
-## [0.7.3-alpha-TEST](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.3-alpha-TEST) (2024-04-22)
-[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.2...0.7.3-alpha-TEST)
+## [999.9.0](https://github.com/IBM/sol003-lifecycle-driver/tree/999.9.0) (2024-04-22)
+[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.2...999.9.0)
 
 **Implemented enhancements:**
 
