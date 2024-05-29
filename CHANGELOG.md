@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.7.3](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.3) (2024-05-29)
+[Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.2...0.7.3)
+
+**Implemented enhancements:**
+
+- Fixed security vulnerabilities in base os image [\#206](https://github.com/IBM/sol003-lifecycle-driver/issues/206)
+- 
 ## [0.7.2](https://github.com/IBM/sol003-lifecycle-driver/tree/0.7.2) (2024-04-22)
 [Full Changelog](https://github.com/IBM/sol003-lifecycle-driver/compare/0.7.1...0.7.2)
 
