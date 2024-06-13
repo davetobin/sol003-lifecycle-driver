@@ -1,0 +1,39 @@
+# ===================================================================
+# Spring Boot configuration for the "test" profile.
+#
+# This configuration overrides the application.yml file.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+vnfmdriver:
+  kafka:
+    enabled: false
+  packageManagement:
+    enabled: true
+    packageRepositoryUrl: http://does-not-exist:8081
+    repositoryName: test-repository
+  grant:
+    automatic: false
+    provider:
+      url: http://localhost:8080
+      authentication:
+        type: NONE
+
+spring:
+  jackson:
+    serialization:
+      indent_output: true
+
+server:
+  port: 8196
+  ssl:
+    key-store-type: PKCS12
+    key-store: /var/lm/keystore/keystore.p12
+    key-store-password: password
+    key-alias: sol003-lifecycle-driver
+    enabled: false

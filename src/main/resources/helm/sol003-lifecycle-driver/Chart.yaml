@@ -1,0 +1,20 @@
+name: sol003-lifecycle-driver
+version: #project.version#
+appVersion: #project.version#
+apiVersion: v1
+description: A Helm chart for the SOL003 VNFM Driver
+maintainers:
+- name: Accanto Systems
+  email: containers@accantosystems.com
+icon: http://www.accantosystems.com/wp-content/uploads/2017/06/Accanto-w_white-systems200px.png
+keywords:
+- LM
+- ALM
+- SLM
+- Lifecycle
+- Accanto
+- ETSI
+- SOL003
+- VNFM
+- Driver
+engine: gotpl
