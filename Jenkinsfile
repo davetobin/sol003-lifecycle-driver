@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-String tarquinBranch = "CPAN-1310"
+String tarquinBranch = "CPNA-1310"
 
 library "tarquin@$tarquinBranch"
 
